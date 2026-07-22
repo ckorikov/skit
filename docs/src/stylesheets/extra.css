@@ -1,0 +1,17 @@
+/* Chart containers */
+div[data-plot] {
+  width: 100%;
+  max-width: 620px;
+  height: 340px;
+  margin: 1.5rem auto 0.5rem;
+}
+
+/* Caption paragraph that follows a plot */
+div[data-plot] + p {
+  max-width: 620px;
+  margin: 0.25rem auto 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color--light);
+  text-align: center;
+}

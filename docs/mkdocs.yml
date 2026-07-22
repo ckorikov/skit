@@ -1,0 +1,59 @@
+site_name: Skit — Syllabus Kit
+site_description: A tool for building study plans and learning programs
+docs_dir: src
+site_dir: ../dist/
+use_directory_urls: false
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+
+nav:
+  - Overview: index.md
+  - Core:
+      - Concepts: core/concepts.md
+      - The curriculum graph: core/graph.md
+      - Identifiers and Attributes: core/attributes.md
+      - Syllabus construction: core/syllabus.md
+  - Extensions:
+      - Literature: extensions/literature.md
+      - Assessment: extensions/assessment.md
+
+markdown_extensions:
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.plot.ly/plotly-2.35.2.min.js
+  - javascripts/plots.js
