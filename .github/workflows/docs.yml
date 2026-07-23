@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv run --group docs mkdocs build -f docs/mkdocs.yml
+      - run: uv run --frozen --only-group docs mkdocs build -f docs/mkdocs.yml
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
