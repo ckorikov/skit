@@ -1,0 +1,1 @@
+"""Extension contract (interface only)."""
