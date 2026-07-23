@@ -31,6 +31,7 @@ nav:
       - The curriculum graph: core/graph.md
       - Identifiers and Attributes: core/attributes.md
       - Syllabus construction: core/syllabus.md
+      - System architecture: core/architecture.md
   - Extensions:
       - Literature: extensions/literature.md
       - Assessment: extensions/assessment.md
