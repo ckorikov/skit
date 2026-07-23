@@ -15,9 +15,12 @@ class Frozen(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
 
-class Named(Frozen):
-    title: str = Field(min_length=1)
+class Describable(Frozen):
     description: str | None = None
+
+
+class Named(Describable):
+    title: str = Field(min_length=1)
 
 
 def _require_unique(keys, what: str) -> None:
@@ -82,7 +85,7 @@ class Module(Named):
         return v
 
 
-class Curriculum(Named):
+class Curriculum(Describable):
     pass
 
 
@@ -103,5 +106,7 @@ class Syllabus(Named):
     @field_validator("content")
     @classmethod
     def _unique_topics(cls, v: tuple[SyllabusLevel, ...]) -> tuple[SyllabusLevel, ...]:
-        _require_unique([t.topic for level in v for t in level], "topics within a syllabus")
+        _require_unique(
+            [t.topic for level in v for t in level], "topics within a syllabus"
+        )
         return v

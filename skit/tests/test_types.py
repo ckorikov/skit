@@ -30,6 +30,7 @@ from skit.core.types import (
 
 # --- builders (explicit constructors) -------------------------------------
 
+
 def evidence(question="q", answer=None) -> Evidence:
     return Evidence(question=question, answer=answer)
 
@@ -50,10 +51,12 @@ def module(*topics) -> Module:
 
 
 def curriculum(**fields) -> Curriculum:
-    return Curriculum(**{"title": "C", **fields})
+    return Curriculum(**fields)
 
 
-def tis(topic="t", kind: Literal["required", "optional"] = "required", **fields) -> TopicInSyllabus:
+def tis(
+    topic="t", kind: Literal["required", "optional"] = "required", **fields
+) -> TopicInSyllabus:
     return TopicInSyllabus(topic=topic, kind=kind, **fields)
 
 
@@ -88,6 +91,7 @@ def skit_type_instance(request):
 # ==========================================================================
 
 # strategy factories (functions, not module constants — @given can't take a fixture)
+
 
 def texts():
     return st.text(min_size=1, max_size=20)
@@ -158,17 +162,27 @@ def test_syllabus_duplicate_topic_rejected():
 # Serialize / deserialize
 # ==========================================================================
 
+
 def test_dict_roundtrip(skit_type_instance):
-    assert type(skit_type_instance).model_validate(skit_type_instance.model_dump()) == skit_type_instance
+    assert (
+        type(skit_type_instance).model_validate(skit_type_instance.model_dump())
+        == skit_type_instance
+    )
 
 
 def test_json_roundtrip(skit_type_instance):
-    assert type(skit_type_instance).model_validate_json(skit_type_instance.model_dump_json()) == skit_type_instance
+    assert (
+        type(skit_type_instance).model_validate_json(
+            skit_type_instance.model_dump_json()
+        )
+        == skit_type_instance
+    )
 
 
 # ==========================================================================
 # Update (copy-on-write)
 # ==========================================================================
+
 
 @pytest.mark.parametrize(
     "original, patch",
@@ -195,9 +209,12 @@ def test_model_copy_updates_fields(original, patch):
 # Algebra: equality, hashing, immutability
 # ==========================================================================
 
+
 def test_equal_and_hashable(skit_type_instance):
     twin = skit_type_instance.model_copy()
-    assert twin == skit_type_instance and twin is not skit_type_instance  # value equality, not identity
+    assert (
+        twin == skit_type_instance and twin is not skit_type_instance
+    )  # value equality, not identity
     assert hash(twin) == hash(skit_type_instance)
 
 
