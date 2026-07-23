@@ -6,21 +6,35 @@ Syllabus Kit
 
 Requires [uv](https://docs.astral.sh/uv/).
 
-For use — runtime deps only:
+Development — installs runtime + dev tools by default:
 
 ```sh
 uv sync
 ```
 
-For development — adds tests, lint, type check:
+Run tests, lint, type check:
 
 ```sh
-uv sync --group dev
+uv run pytest        # tests
+uv run ruff check    # lint
+uv run ruff format   # format
+uv run pyright       # type check
 ```
 
-For docs:
+Release / deploy — runtime deps only, no dev:
 
 ```sh
-uv sync --group docs
-uv run mkdocs build -f docs/mkdocs.yml
+uv sync --no-dev
+```
+
+Build a distributable (dev/docs groups never included):
+
+```sh
+uv build             # -> dist/*.whl, *.tar.gz
+```
+
+Docs:
+
+```sh
+uv run --group docs mkdocs build -f docs/mkdocs.yml
 ```

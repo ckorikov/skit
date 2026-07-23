@@ -12,7 +12,13 @@ dependencies = [
 ]
 
 [tool.uv]
-default-groups = []
+default-groups = ["dev"]
+
+[tool.pytest.ini_options]
+testpaths = ["skit/tests"]
+
+[tool.ruff]
+src = ["skit"]
 
 [dependency-groups]
 dev = [
