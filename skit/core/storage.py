@@ -23,6 +23,7 @@ MODELS = {
     "attributes": None,
 }
 Attributes = dict[str, dict[str, Value]]  # entity id -> namespace -> value
+MANIFEST = "curriculum.json"  # the root file: curriculum entity + package manifest
 
 
 def _filename(name: str, kind: str) -> str:
@@ -57,12 +58,41 @@ class State(Frozen):
     active_syllabus: str | None = None
 
     @classmethod
+    def empty(cls, description: str | None = None) -> "State":
+        """A fresh curriculum with no packages."""
+        return cls(curriculum=Curriculum(description=description))
+
+    @classmethod
+    def create(cls, root: Path | str, description: str | None = None) -> "State":
+        """Write a fresh curriculum into ROOT, or raise if one is already there."""
+        if cls.exists(root):
+            raise FileExistsError(root)
+        state = cls.empty(description)
+        state.save(root)
+        return state
+
+    @staticmethod
+    def exists(root: Path | str) -> bool:
+        """Whether ROOT already holds a curriculum."""
+        return (Path(root) / MANIFEST).exists()
+
+    def summary(self) -> dict[str, int]:
+        """Entity counts across all packages."""
+        return {
+            "packages": len(self.packages),
+            "topics": len(self.topics()),
+            "relations": len(self.relations()),
+            "modules": len(self.modules()),
+            "syllabi": sum(len(p.syllabi) for p in self.packages),
+        }
+
+    @classmethod
     def load(cls, root: Path | str) -> "State":
         root = Path(root)
-        m = _read(root / "curriculum.json")
+        m = _read(root / MANIFEST)
         files = {kind: m.get(kind, []) for kind in MODELS}
         return cls(
-            curriculum=Curriculum(title=m["title"], description=m.get("description")),
+            curriculum=Curriculum(description=m.get("description")),
             packages=tuple(
                 _deserialize_package(name, _read_package(root, name, files))
                 for name in _find_package_names(files)
@@ -72,12 +102,13 @@ class State(Frozen):
 
     def save(self, root: Path | str) -> None:
         root = Path(root)
+        root.mkdir(parents=True, exist_ok=True)
         written = [
             entry
             for pkg in self.packages
             for entry in _write_package(root, pkg.name, _serialize_package(pkg))
         ]
-        _write(root / "curriculum.json", _build_manifest(self, written))
+        _write(root / MANIFEST, _build_manifest(self, written))
 
     def topics(self) -> dict[str, Topic]:
         return {p.qualify_id(t.id): t for p in self.packages for t in p.topics}
@@ -168,7 +199,7 @@ def _write_package(root: Path, name: str, raw: dict) -> list[tuple[str, str]]:
 
 
 def _build_manifest(state: State, files: list[tuple[str, str]]) -> dict:
-    m: dict = {"title": state.curriculum.title}
+    m: dict = {}
     if (desc := state.curriculum.description) is not None:
         m["description"] = desc
     for kind in MODELS:
