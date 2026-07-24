@@ -7,9 +7,20 @@ requires-python = ">=3.13"
 dependencies = [
     "networkx>=3.6.1",
     "pydantic>=2.13.4",
+    "python-slugify>=8.0.4",
     "rich>=15.0.0",
     "typer>=0.27.0",
 ]
+
+[project.scripts]
+skit = "skit.app:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["skit*"]
 
 [tool.uv]
 default-groups = ["dev"]
